@@ -12,6 +12,8 @@ import { getProducts, createProduct, getProduct, deleteProduct, updateProduct} f
 router.route('/')
     .get(getProducts)
     .post([
+        body('id').optional().not().exists().withMessage('Invalid request'),
+        body('item_id').optional().not().exists().withMessage('Invalid request'),
         body('description').isLength({ min: 1 }).withMessage('You must indicate a description'),
         body('price').isFloat().withMessage('You must indicate a price'),
         body('quantity').isInt({ min: 1 }).withMessage('You must indicate a quantity'),
@@ -22,6 +24,8 @@ router.route('/:productId')
     .get(getProduct)
     .delete(verifyToken, checkAdmin, deleteProduct)
     .put([
+        body('id').optional().not().exists().withMessage('Invalid request'),
+        body('item_id').optional().not().exists().withMessage('Invalid request'),
         body('description').isLength({ min: 1 }).withMessage('You must indicate a description'),
         body('price').isFloat().withMessage('You must indicate a price'),
         body('quantity').isInt().withMessage('You must indicate a quantity'),

@@ -12,13 +12,7 @@ import { connect } from '../database';
 import { User } from '../interface/User';
 
 // Login a user
-export async function login(req:Request , res:Response){
-    // Check for errors in the request
-    const errors = validationResult(req);
-    if(!errors.isEmpty()){
-        return res.status(400).json({ errors: errors.array() });
-    }
-    
+export async function login(req:Request , res:Response){   
     const email = req.body.email;
     const conn = await connect();
 
@@ -45,12 +39,6 @@ export async function login(req:Request , res:Response){
 
 // Create a user
 export async function signin(req: Request, res: Response): Promise<Response>{
-    // Check for errors in the request
-    const errors = validationResult(req);
-    if(!errors.isEmpty()){
-        return res.status(400).json({ errors: errors.array() });
-    }
-
     // Store and maintain data
     const newUser: User = req.body;
     newUser['type_of_user'] = 'buyer';

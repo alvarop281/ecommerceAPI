@@ -40,12 +40,6 @@ export async function getProductFromItems(req: Request, res: Response): Promise<
 
 // Create a product
 export async function createProduct(req: Request, res: Response): Promise<Response>{
-    // Check for errors in the request
-    const errors = validationResult(req);
-    if(!errors.isEmpty()){
-        return res.status(400).json({ errors: errors.array() });
-    }
-
     // Connect and create a new product
     const conn = await connect();
     const newProduct: Product = req.body;
@@ -76,13 +70,6 @@ export async function deleteProduct(req: Request, res: Response): Promise<Respon
 
 // Update a product
 export async function updateProduct(req: Request, res: Response): Promise<Response>{
-
-    // Check for errors in the request
-    const errors = validationResult(req);
-    if(!errors.isEmpty()){
-        return res.status(400).json({ errors: errors.array() });
-    }
-
     // Save the params
     const id = req.params.productId;
     const updateProduct: Product = req.body;

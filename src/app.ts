@@ -9,6 +9,9 @@ import ItemRouter from './routes/item.route';
 import ProductRouter from './routes/product.route';
 import UserRouter from './routes/user.route';
 import LoginRoute from './routes/auth/login.route';
+import UserAddressRoute from './routes/user.address.route';
+import OrderRoute from './routes/order.route';
+import userOrderRoute from './routes/user.order.route';
 
 export class App{
     private app: Application;
@@ -84,13 +87,24 @@ export class App{
                 //get        Only admin user
                 //put        Any user can enter as long as they update their own data
                 //delete     Only admin user
-            //http://localhost:3000/api/users/addresses/
+
+        this.app.use('/api/users', userOrderRoute);
+            //http://localhost:3000/api/users/:userId/orders/
                 //get        Only owner user
                 //post       Only owner user
-            //http://localhost:3000/api/users/addresses/:id
+
+        this.app.use('/api/users', UserAddressRoute)
+            //http://localhost:3000/api/users/:userId/addresses/
+                //get        Only owner user
+                //post       Only owner user
+            //http://localhost:3000/api/users/:userId/addresses/:addressId
                 //get        Only owner user
                 //put        Only owner user
                 //delete     Only owner user
+
+        this.app.use('/api/orders', OrderRoute);
+            //http://localhost:3000/api/orders/
+                //get        Only admin user
     }
 
     // Listening 

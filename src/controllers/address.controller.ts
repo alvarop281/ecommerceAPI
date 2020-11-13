@@ -39,12 +39,6 @@ export async function getAddressFromUser(req: Request, res: Response): Promise<R
 
 // Create a address
 export async function createAddress(req: Request, res: Response): Promise<Response>{
-    // Check for errors in the request
-    const errors = validationResult(req);
-    if(!errors.isEmpty()){
-        return res.status(400).json({ errors: errors.array() });
-    }
-    
     const userId = req.params.userId;
 
     // Connect and create a new address

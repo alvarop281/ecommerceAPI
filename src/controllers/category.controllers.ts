@@ -27,12 +27,6 @@ export async function getCategory(req:Request , res:Response): Promise<Response>
 
 // Create a category
 export async function createCategory(req:Request , res:Response): Promise<Response>{
-    // Check errors
-    const errors = validationResult(req);
-    if(!errors.isEmpty()){
-        return res.status(400).json({ errors: errors.array() });
-    }
-
     // Connect and Create Category
     const newCategory: Category = req.body;
     const conn = await connect();
@@ -55,12 +49,6 @@ export async function deleteCategory(req:Request , res:Response): Promise<Respon
 }
 
 export async function updateCategory(req:Request , res:Response): Promise<Response>{
-    // Check errors
-    const errors = validationResult(req);
-    if(!errors.isEmpty()){
-        return res.status(400).json({ errors: errors.array() });
-    }
-
     // Save params
     const id = req.params.categoryId;
     const updateCategory: Category = req.body;

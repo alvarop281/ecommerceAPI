@@ -46,3 +46,17 @@ CREATE TABLE addresses(
     created_at TIMESTAMP DEFAULT CURRENT_TIME,
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 )
+
+
+CREATE TABLE orders(
+    id INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    payment_type VARCHAR(191),
+    proof_of_payment VARCHAR(191),
+    delivery_method VARCHAR(191),
+    commentary VARCHAR(191),
+    status VARCHAR(191),
+    address_id VARCHAR(191),
+    user_id INT(11) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIME,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+)

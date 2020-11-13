@@ -16,6 +16,7 @@ import { getItemFromCategory } from '../controllers/item.controller';
 router.route('/')
     .get(getCategories)
     .post([
+        body('id').optional().not().exists().withMessage('Invalid request'),
         body('description').isLength({ min: 2 }).withMessage('must be at least 2 chars long'),
         body('background').isLength({ min: 2 }).withMessage('must be at least 2 chars long')
     ], verifyToken, checkAdmin, createCategory);
@@ -24,6 +25,7 @@ router.route('/:categoryId')
     .get(getCategory)
     .delete(verifyToken, checkAdmin, deleteCategory)
     .put([
+        body('id').optional().not().exists().withMessage('Invalid request'),
         body('description').isLength({ min: 2 }).withMessage('must be at least 2 chars long'),
         body('background').isLength({ min: 2 }).withMessage('must be at least 2 chars long')
     ], verifyToken, checkAdmin, updateCategory);

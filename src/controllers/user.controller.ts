@@ -33,12 +33,6 @@ export async function deleteUser(req: Request, res: Response): Promise<Response>
 
 // Update a user
 export async function updateUser(req: Request, res: Response): Promise<Response>{
-    // Check for errors in the request
-    const errors = validationResult(req);
-    if(!errors.isEmpty()){
-        return res.status(400).json({ errors: errors.array() });
-    }
-
     // Save the params
     const id = req.params.userId;
     const updateUser: User = req.body;

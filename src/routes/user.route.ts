@@ -7,10 +7,8 @@ import {verifyToken} from '../middleware/verifyToken';
 import {checkAdmin} from '../middleware/checkAdmin';
 import {checkOwner} from '../middleware/checkIfUserIsOwner';
 
-
 // Controllers
 import { getUsers, deleteUser, updateUser } from '../controllers/user.controller';
-import { getAllFromUser, createAddress, getAddressFromUser, deleteAddressFromUser, UpdateAddressFromUser } from '../controllers/address.controller';
 
 router.route('/')
     .get(verifyToken, checkAdmin, getUsers);
@@ -24,21 +22,7 @@ router.route('/:userId')
         check('dni').optional().isLength({ min: 3 }).withMessage('You must indicate your dni'),
         check('phone_number').optional().isLength({ min: 3 }).withMessage('You must indicate your phone number'),
         check('type_of_user').optional().isLength({ min: 5, max: 5 }).withMessage('Invalid Request'),
+        check('id').optional().not().exists().withMessage('Invalid request'),
     ], verifyToken, checkOwner, updateUser);
-
-router.route('/:userId/addresses')
-    .get(verifyToken, checkOwner, getAllFromUser)
-    .post(verifyToken, [
-        check('address').isLength({ min: 1 }).withMessage('You must indicate your addres'),
-        check('reference').optional().isLength({ min: 1 }).withMessage('You must indicate a reference')
-    ], checkOwner, createAddress);
-
-router.route('/:userId/addresses/:addressId')
-    .get(verifyToken, checkOwner, getAddressFromUser)
-    .delete(verifyToken, checkOwner, deleteAddressFromUser)
-    .put(verifyToken, [
-        check('address').isLength({ min: 1 }).withMessage('You must indicate your addres'),
-        check('reference').optional().isLength({ min: 1 }).withMessage('You must indicate a reference')
-    ], checkOwner, UpdateAddressFromUser);
 
 export default router;

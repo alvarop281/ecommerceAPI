@@ -42,12 +42,6 @@ export async function getItemFromCategory(req: Request, res: Response): Promise<
 
 // Create an item
 export async function createItem(req: Request, res: Response): Promise<Response>{
-    // Check for errors in the request
-    const errors = validationResult(req);
-    if(!errors.isEmpty()){
-        return res.status(400).json({ errors: errors.array() });
-    }
-
     // Save params
     const newItem: Item = req.body;
 
@@ -113,12 +107,6 @@ export async function deleteItem(req: Request, res: Response): Promise<Response>
 
 // Update an item
 export async function updateItem(req: Request, res: Response): Promise<Response>{
-    // Check for errors in the request
-    const errors = validationResult(req);
-    if(!errors.isEmpty()){
-        return res.status(400).json({ errors: errors.array() });
-    }
-
     // Save the params
     const id = req.params.itemId;
     const updateItem: Item = req.body;
