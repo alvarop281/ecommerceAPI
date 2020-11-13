@@ -17,7 +17,6 @@ router.route('/:userId/orders/:orderId')
     .delete(verifyToken, checkOwner, deleteOrder)
     .put([
         check('payment_type').optional().isIn(['cash', 'transfer', 'card']).withMessage('You must indicate a payment type'),
-        check('proof_of_payment').optional().isLength({ min: 1 }).withMessage('You must indicate a proof of payment'),
         check('delivery_method').optional().isIn(['delivery', 'pickUp']).withMessage('You must indicate a delivery method'),
         check('commentary').optional().isLength({ min: 1 }).withMessage('You must indicate a commentary'),
         check('address_id').optional().isLength({ min: 1 }).withMessage('You must indicate an addressID'),
