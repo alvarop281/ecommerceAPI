@@ -37,3 +37,12 @@ CREATE TABLE users(
     type_of_user VARCHAR(191) DEFAULT 'buyer',
     created_at TIMESTAMP DEFAULT CURRENT_TIME
 )
+
+CREATE TABLE addresses(
+    id INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    address VARCHAR(191),
+    reference VARCHAR(191),
+    user_id INT(11) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIME,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+)

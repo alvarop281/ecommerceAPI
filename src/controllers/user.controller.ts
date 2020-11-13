@@ -39,11 +39,6 @@ export async function updateUser(req: Request, res: Response): Promise<Response>
         return res.status(400).json({ errors: errors.array() });
     }
 
-    // Save request data
-    const userReq: any = req.user;
-    // Only the same user can modify their own data
-    if(userReq[0].id != req.params.userId) return res.status(403).json('Unauthorized access'); 
-
     // Save the params
     const id = req.params.userId;
     const updateUser: User = req.body;

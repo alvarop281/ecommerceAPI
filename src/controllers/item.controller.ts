@@ -9,7 +9,6 @@ import { connect } from '../database';
 
 // Interface Item
 import { Item } from '../interface/Item';
-import { FieldPacket } from 'mysql2';
 
 // Get all Items
 export async function getItems(req: Request, res: Response): Promise<Response>{

@@ -82,8 +82,15 @@ export class App{
         this.app.use('/api/users', UserRouter);
             //http://localhost:3000/api/users/
                 //get        Only admin user
-                //put        Any user
+                //put        Any user can enter as long as they update their own data
                 //delete     Only admin user
+            //http://localhost:3000/api/users/addresses/
+                //get        Only owner user
+                //post       Only owner user
+            //http://localhost:3000/api/users/addresses/:id
+                //get        Only owner user
+                //put        Only owner user
+                //delete     Only owner user
     }
 
     // Listening 
