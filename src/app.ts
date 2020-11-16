@@ -12,6 +12,8 @@ import LoginRoute from './routes/auth/login.route';
 import UserAddressRoute from './routes/user.address.route';
 import OrderRoute from './routes/order.route';
 import userOrderRoute from './routes/user.order.route';
+import OrderDetail from './routes/order.detail.route';
+
 
 export class App{
     private app: Application;
@@ -105,6 +107,14 @@ export class App{
         this.app.use('/api/orders', OrderRoute);
             //http://localhost:3000/api/orders/
                 //get        Only admin user
+
+        this.app.use('/api/orders', OrderDetail);
+            //http://localhost:3000/api/orders/:orderId/details
+                //get        Only owner user
+                //post        Only owner user
+            //http://localhost:3000/api/orders/:orderId/details/:detailId
+                //put        Only owner user
+                //delete     Only owner user
     }
 
     // Listening 

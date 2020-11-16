@@ -11,5 +11,4 @@ import { getOrders } from '../controllers/order.controller';
 router.route('/')
     .get(verifyToken, checkAdmin, getOrders);
 
-
 export default router;

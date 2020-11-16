@@ -60,3 +60,16 @@ CREATE TABLE orders(
     created_at TIMESTAMP DEFAULT CURRENT_TIME,
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 )
+
+CREATE TABLE details(
+    id INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    ordered_quantity INT(11) UNSIGNED NOT NULL,
+    unit_price DOUBLE NOT NULL,
+    total_by_product DOUBLE NOT NULL,
+    product_id INT(11) NOT NULL,
+    order_id INT(11) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIME,
+    FOREIGN KEY (order_id) REFERENCES orders(id) ON DELETE CASCADE,
+    FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE
+)
+ALTER TABLE details ADD UNIQUE `unique_index`(product_id, order_id);
