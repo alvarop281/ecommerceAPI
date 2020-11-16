@@ -13,11 +13,9 @@ router.route('/')
     .get(getProducts)
     .post([
         body('id').optional().not().exists().withMessage('Invalid request'),
-        body('item_id').optional().not().exists().withMessage('Invalid request'),
         body('description').isLength({ min: 1 }).withMessage('You must indicate a description'),
         body('price').isFloat().withMessage('You must indicate a price'),
         body('quantity').isInt({ min: 1 }).withMessage('You must indicate a quantity'),
-        body('item_id').isInt().withMessage('Invalid request'),
     ], verifyToken, checkAdmin, createProduct);
 
 router.route('/:productId')
@@ -26,10 +24,9 @@ router.route('/:productId')
     .put([
         body('id').optional().not().exists().withMessage('Invalid request'),
         body('item_id').optional().not().exists().withMessage('Invalid request'),
-        body('description').isLength({ min: 1 }).withMessage('You must indicate a description'),
-        body('price').isFloat().withMessage('You must indicate a price'),
-        body('quantity').isInt().withMessage('You must indicate a quantity'),
-        body('item_id').isInt().withMessage('Invalid request'),
+        body('description').optional().isLength({ min: 1 }).withMessage('You must indicate a description'),
+        body('price').optional().isFloat().withMessage('You must indicate a price'),
+        body('quantity').optional().isInt().withMessage('You must indicate a quantity'),
     ], verifyToken, checkAdmin, updateProduct);
 
 export default router;

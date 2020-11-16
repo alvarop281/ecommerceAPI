@@ -1,30 +1,27 @@
 import {Request, Response} from 'express';
 
-// Middleware to Validate the reques
-import {validationResult} from 'express-validator';
-
 // Connection to the database
 import { connect } from '../database';
 
 // Interface Product
 import { Product } from '../interface/Product';
 
+import { SelectProducts, SelectProductByID, CreateProduct, DeleteProduct, UpdateProduct } from '../models/Products';
+
 // Get all products
 export async function getProducts(req: Request, res: Response): Promise<Response>{
-    const conn = await connect();
-    const products = await conn.query('SELECT * FROM products');
-    return res.json(products[0]);
+    
+    const products = await SelectProducts();
+    return res.json(products);
 }
 
 // Get a product
 export async function getProduct(req: Request, res: Response): Promise<Response>{
     const id = req.params.productId;
 
-    // Connection to db
-    const conn = await connect();
-    const product = await conn.query('SELECT * FROM products WHERE products.id =?', [id]);
+    const product = await SelectProductByID(id);
 
-    return res.json(product[0]);
+    return res.json(product);
 }
 
 // Get all products from Items 
@@ -46,7 +43,8 @@ export async function createProduct(req: Request, res: Response): Promise<Respon
 
     newProduct['status'] = 'active';        //Default value
 
-    await conn.query('INSERT INTO products SET ?', [newProduct]);
+    // Models
+    await CreateProduct(newProduct);
 
     // Success Response
     return res.json({
@@ -58,9 +56,8 @@ export async function createProduct(req: Request, res: Response): Promise<Respon
 export async function deleteProduct(req: Request, res: Response): Promise<Response>{
     const id = req.params.productId;
 
-    // Connection to db
-    const conn = await connect();
-    const product = await conn.query('DELETE FROM products WHERE products.id =?', [id]);
+    // Models
+    await DeleteProduct(id);
 
     // Success Response
     return res.json({
@@ -81,9 +78,7 @@ export async function updateProduct(req: Request, res: Response): Promise<Respon
         updateProduct['status'] = 'active'; 
     }
 
-    // Connect and Update
-    const conn = await connect();
-    await conn.query('UPDATE products SET ? WHERE products.id = ?', [updateProduct, id]);
+    await UpdateProduct(updateProduct, id);
 
     // Success Response
     return res.json({
