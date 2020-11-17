@@ -1,8 +1,5 @@
-import { Request, response, Response } from 'express';
+import { Request, Response } from 'express';
 import fs from 'fs';
-
-// Middleware to Validate the reques
-import {validationResult} from 'express-validator';
 
 // Connection to the database
 import { connect } from '../database';
@@ -10,33 +7,32 @@ import { connect } from '../database';
 // Interface Item
 import { Item } from '../interface/Item';
 
+// Item Model
+import {SelectItems, SelectItemByID, SelectItemByCategory, CreateItem, DeleteItem, UpdateItem } from '../models/Items'; 
+
 // Get all Items
 export async function getItems(req: Request, res: Response): Promise<Response>{
-    const conn = await connect();
-    const items = await conn.query('SELECT * FROM items');
-    return res.json(items[0]);
+    // Item Model
+    const items = await SelectItems();
+    return res.json(items);
 }
 
 // Get an item
 export async function getItem(req: Request, res: Response): Promise<Response>{
     const id = req.params.itemId;
-    // Connection to db
-    const conn = await connect();
-    const item = await conn.query('SELECT * FROM items WHERE items.id =?', [id]);
-
+    // Item Model
+    const item = await SelectItemByID(id);
     // Response
-    return res.json(item[0]);
+    return res.json(item);
 }
 
 // Get all item from Category
 export async function getItemFromCategory(req: Request, res: Response): Promise<Response>{
     const id = req.params.categoryId;
-    // Connection to db
-    const conn = await connect();
-    const item = await conn.query('SELECT * FROM items WHERE items.category_id =?', [id]);
-
+    // Item Model
+    const item = await SelectItemByCategory(id);
     // Response
-    return res.json(item[0]);
+    return res.json(item);
 }
 
 
@@ -63,9 +59,8 @@ export async function createItem(req: Request, res: Response): Promise<Response>
         });
     }
 
-    // Connect and create a new item
-    const conn = await connect();
-    await conn.query('INSERT INTO items SET ?', [newItem]);
+    // Item Model
+    await CreateItem(newItem);
 
     // Success Response
     return res.json({
@@ -75,16 +70,11 @@ export async function createItem(req: Request, res: Response): Promise<Response>
 
 // Delete an item
 export async function deleteItem(req: Request, res: Response): Promise<Response>{
-    
     // Save params
     const id = req.params.itemId;
-
-    // Connection to db
-    const conn = await connect();
-    
     // Get image name to delere
-    const oldImage: any = await conn.query(`SELECT items.image FROM items WHERE items.id = ${id}`);
-    const oldImg: string = oldImage[0][0]['image'];
+    const oldImage: any = await SelectItemByID(id);
+    const oldImg: string = oldImage['image'];
 
     // Try to delete image
     if(oldImg !== '' && oldImg !== null){
@@ -96,7 +86,7 @@ export async function deleteItem(req: Request, res: Response): Promise<Response>
     }
 
     // Delete resource    
-    await conn.query('DELETE FROM items WHERE items.id =?', [id]);
+    await DeleteItem(id);
 
     // Success Response
     return res.json({
@@ -111,8 +101,6 @@ export async function updateItem(req: Request, res: Response): Promise<Response>
     const id = req.params.itemId;
     const updateItem: Item = req.body;
 
-    const conn = await connect();
-
     // Save and store image
     if(req.files){
         const image = req.files.image;
@@ -123,11 +111,9 @@ export async function updateItem(req: Request, res: Response): Promise<Response>
             return res.status(400).json({ errors: 'The file type is invalid' });
         }
 
-
-
         // Get the name of the previous image to delete it
-        const oldImage: any = await conn.query(`SELECT items.image FROM items WHERE items.id = ${id}`);
-        const oldImg: string = oldImage[0][0]['image'];
+        const oldImage: any = await SelectItemByID(id);
+        const oldImg: string = oldImage['image'];
 
         // Try to delete old image
         if(oldImg !== '' && oldImg !== null){
@@ -138,7 +124,6 @@ export async function updateItem(req: Request, res: Response): Promise<Response>
             }
         }
 
-
         // Store file
         image.mv('./uploads/' + image.name, function (error){
             if(error){
@@ -147,9 +132,8 @@ export async function updateItem(req: Request, res: Response): Promise<Response>
         });
     }
 
-    
-    // Connect and Update
-    await conn.query('UPDATE items SET ? WHERE items.id = ?', [updateItem, id]);
+    // Item Model
+    await UpdateItem(updateItem, id);
 
     // Success Response
     return res.json({

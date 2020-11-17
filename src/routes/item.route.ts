@@ -15,7 +15,6 @@ router.route('/')
     .get(getItems)
     .post([
         body('id').optional().not().exists().withMessage('Invalid request'),
-        body('category_id').optional().not().exists().withMessage('Invalid request'),
         body('title').isLength({ min: 1 }).withMessage('You must indicate a title'),
         body('category_id').isInt().withMessage('Invalid request'),
     ], verifyToken, checkAdmin, createItem);
@@ -27,7 +26,6 @@ router.route('/:itemId')
         body('id').optional().not().exists().withMessage('Invalid request'),
         body('category_id').optional().not().exists().withMessage('Invalid request'),
         body('title').isLength({ min: 1 }).withMessage('You must indicate a title'),
-        body('category_id').isInt().withMessage('Invalid request'),
     ], verifyToken, checkAdmin, updateItem);
 
 router.route('/:itemId/products')

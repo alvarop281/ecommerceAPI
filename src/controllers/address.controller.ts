@@ -1,25 +1,21 @@
 import { Request, Response } from 'express';
 
-// Middleware to Validate the reques
-import {validationResult} from 'express-validator';
-
-// Connection to the database
-import { connect } from '../database';
-
 // Interface
 import { Address } from '../interface/Address';
+
+// Address Model
+import {SelectAddressessFromUser, SelectAddressByID, CreateAddress, DeleteAddress, UpdateAddress} from '../models/Addresses';
 
 // Get all addresses from a user
 export async function getAllFromUser(req: Request, res: Response): Promise<Response>{
     // Save request data
     const id = req.params.userId;
 
-    // Connection to db
-    const conn = await connect();
-    const address = await conn.query('SELECT * FROM addresses WHERE addresses.user_id =?', [id]);
+    // Address Model
+    const address = await SelectAddressessFromUser(id);
 
     // Response
-    return res.json(address[0]);
+    return res.json(address);
 }
 
 // Get a address from a user
@@ -28,25 +24,22 @@ export async function getAddressFromUser(req: Request, res: Response): Promise<R
     const userId = req.params.userId;
     const addressId = req.params.addressId;
 
-    // Connection to db
-    const conn = await connect();
-    const address = await conn.query('SELECT * FROM addresses WHERE addresses.user_id =? AND addresses.id =?', [userId, addressId]);
+    // Address Model
+    const address = await SelectAddressByID(userId, addressId);
 
     // Response
-    return res.json(address[0]);
+    return res.json(address);
 }
 
 
 // Create a address
 export async function createAddress(req: Request, res: Response): Promise<Response>{
     const userId = req.params.userId;
-
-    // Connect and create a new address
-    const conn = await connect();
     const newAddress: Address = req.body;
     newAddress['user_id'] = userId;
 
-    await conn.query('INSERT INTO addresses SET ?', [newAddress]);
+    // Address Model
+    await CreateAddress(newAddress);
 
     // Success Response
     return res.json({
@@ -60,9 +53,8 @@ export async function deleteAddressFromUser(req: Request, res: Response): Promis
     const userId = req.params.userId;
     const addressId = req.params.addressId;
 
-    // Connection to db
-    const conn = await connect();
-    const address = await conn.query('DELETE FROM addresses WHERE addresses.user_id =? AND addresses.id =?', [userId, addressId]);
+    // Address Model
+    await DeleteAddress(userId, addressId);
 
     // Response
     return res.json({
@@ -78,9 +70,8 @@ export async function UpdateAddressFromUser(req: Request, res: Response): Promis
     const addressId = req.params.addressId;
     const updateAddress: Address = req.body;
 
-    // Connection to db
-    const conn = await connect();
-    const address = await conn.query('UPDATE addresses SET ? WHERE addresses.user_id =? AND addresses.id =?', [updateAddress, userId, addressId]);
+    // Addres Model
+    await UpdateAddress(updateAddress, userId, addressId);
 
     // Response
     return res.json({
