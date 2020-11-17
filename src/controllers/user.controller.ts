@@ -1,29 +1,24 @@
 import {Request, Response} from 'express';
 import bcrypt from 'bcrypt';
 
-// Middleware
-import {body, validationResult} from 'express-validator';
-
-// Connection to the database
-import { connect } from '../database';
-
-// Interface User
+// Interface
 import { User } from '../interface/User';
+// Model
+import {SelectUser, DeleteUser, UpdateUser} from '../models/Users';
 
 // Get all users
 export async function getUsers(req: Request, res: Response): Promise<Response>{
-    const conn = await connect();
-    const users = await conn.query('SELECT * FROM users');
-    return res.json(users[0]);
+    // Users Model
+    const users = await SelectUser()
+    return res.json(users);
 }
 
 // Delete a user
 export async function deleteUser(req: Request, res: Response): Promise<Response>{
     const id = req.params.userId;
 
-    // Connection to db
-    const conn = await connect();
-    await conn.query('DELETE FROM users WHERE users.id =?', [id]);
+    // User Model
+    await DeleteUser(id);
 
     // Success Response
     return res.json({
@@ -40,9 +35,8 @@ export async function updateUser(req: Request, res: Response): Promise<Response>
         updateUser['password'] = bcrypt.hashSync(req.body.password.toString(), 10);
     }
 
-    // Connect and Update
-    const conn = await connect();
-    await conn.query('UPDATE users SET ? WHERE users.id = ?', [updateUser, id]);
+    // User Model
+    await UpdateUser(updateUser, id);
 
     // Success Response
     return res.json({

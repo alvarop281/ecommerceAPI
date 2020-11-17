@@ -1,9 +1,6 @@
 import { Request, Response } from 'express';
 import fs from 'fs';
 
-// Connection to the database
-import { connect } from '../database';
-
 // Interface Item
 import { Item } from '../interface/Item';
 

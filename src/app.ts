@@ -55,8 +55,11 @@ export class App{
         // Auth
         this.app.use('/auth', LoginRoute);
             //http://localhost:3000/auth/sigin/
+                //post       Public
             //http://localhost:3000/auth/login/
+                //post       Public
             //http://localhost:3000/auth/profile/
+                //get        Public
 
         // API (get, post, put, delete)
         this.app.use('/api/categories', CategoryRouter);

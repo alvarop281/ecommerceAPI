@@ -11,7 +11,7 @@ export async function checkOwnerOrder(req: Request, res: Response, next: NextFun
     // Only the same user can modify their own data
     try{
         if(order === undefined) return res.status(403).json({ error: 'Order does not exist'})
-        if(userReq[0].id != order['user_id']) return res.status(403).json({ error: 'Unauthorized access'}); 
+        if(userReq.id != order['user_id']) return res.status(403).json({ error: 'Unauthorized access'}); 
     }catch{}
 
     next();

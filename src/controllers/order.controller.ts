@@ -1,8 +1,5 @@
 import {Request, Response} from 'express';
 
-// Middleware to Validate the reques
-import {validationResult} from 'express-validator';
-
 // Connection to the database
 import { connect } from '../database';
 
