@@ -10,6 +10,14 @@ export async function SelectProductByID(id: number | String){
     return product[0][0];
 }
 
+export async function SelectProductByItem(id: number | String){   
+    const conn = await connect();
+    const product: any = await conn.query('SELECT * FROM products WHERE products.item_id =?', [id]);
+    conn.end();
+
+    return product[0];
+}
+
 export async function SelectProducts(){   
     const conn = await connect();
     const products: any = await conn.query('SELECT * FROM products');

@@ -1,16 +1,20 @@
 import {Request, Response} from 'express';
 
-// Connection to the database
-import { connect } from '../database';
-
 // Interface Orders
 import { Order } from '../interface/Order';
 
+// Model
+import {SelectOrders, 
+        SelectActiveOrderByUser, 
+        SelectOrderByUserAndId, 
+        CreateOrder, 
+        DeleteOrder, 
+        UpdateOrder} from '../models/Orders';
+
 // Get all orders
 export async function getOrders(req: Request, res: Response): Promise<Response>{
-    const conn = await connect();
-    const orders = await conn.query('SELECT * FROM orders');
-    return res.json(orders[0]);
+    const orders: Order = await SelectOrders()
+    return res.json(orders);
 }
 
 // Get a order from order
@@ -18,25 +22,22 @@ export async function getOrderFromUser(req: Request, res: Response): Promise<Res
     // Save request data
     const userId = req.params.userId;
 
-    const conn = await connect();
-    const orders = await conn.query('SELECT * FROM orders WHERE orders.user_id =? AND orders.status ="active"', [userId]);
+    const orders: Order = await SelectActiveOrderByUser(userId);
 
-    return res.json(orders[0]);
+    return res.json(orders);
 }
 
 // create a order
 export async function createOrder(req: Request, res: Response): Promise<Response>{
     // Save request data
     const userId = req.params.userId;
-    
-    const conn = await connect();
-    const orders: any = await conn.query('SELECT * FROM orders WHERE orders.user_id =? AND orders.status ="active"', [userId]);
-
+    const orders: Order = await SelectActiveOrderByUser(userId);
+        
     try{
-        if(orders[0][0].status === 'active'){
+        if(orders.status === 'active'){
             return res.json({
                 message: "You have an active order",
-                order: orders[0][0]
+                orders
             });
         }
     } catch {}
@@ -52,8 +53,7 @@ export async function createOrder(req: Request, res: Response): Promise<Response
     newOrder['user_id'] = userId;               //Default value
 
     // Create
-    await conn.query('INSERT INTO orders SET ?', [newOrder]);
-
+    await CreateOrder(newOrder);
     // Success Response
     return res.json({
         message: "Order Created"
@@ -67,13 +67,11 @@ export async function deleteOrder(req: Request, res: Response): Promise<Response
     const userId = req.params.userId;
     const orderId = req.params.orderId;
     
-    const conn = await connect();
+     //Validate status order
+    const order: Order = await SelectOrderByUserAndId(userId, orderId);
+    if(order.status !== 'active') return res.status(400).json({ message: 'Cannot delete a processed order'}); 
 
-    //Validate status order
-    const order: any = await conn.query('SELECT * FROM orders WHERE orders.user_id =? AND orders.id =?', [userId, orderId]);
-    if(order[0][0].status !== 'active') return res.status(400).json({ message: 'Cannot delete a processed order'}); 
-
-    await conn.query('DELETE FROM orders WHERE orders.user_id =? AND orders.id =?', [userId, orderId]);    
+    await DeleteOrder(userId, orderId);    
 
     // Success Response
     return res.json({
@@ -82,7 +80,7 @@ export async function deleteOrder(req: Request, res: Response): Promise<Response
 }
 
 // Update a Order from a user
-export async function UpdateOrder(req: Request, res: Response): Promise<Response>{
+export async function updateAnOrder(req: Request, res: Response): Promise<Response>{
     // Save request data
     const userId = req.params.userId;
     const orderId = req.params.orderId;
@@ -108,10 +106,7 @@ export async function UpdateOrder(req: Request, res: Response): Promise<Response
     }
     updateOrder['status'] = 'in process';
 
-    // Connection to db
-    const conn = await connect();
-    await conn.query('UPDATE orders SET ? WHERE orders.user_id =? AND orders.id =?', [updateOrder, userId, orderId]);
-    await conn.end();
+    await UpdateOrder(updateOrder, userId, orderId);
 
     // Response
     return res.json({

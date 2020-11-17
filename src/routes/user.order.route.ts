@@ -7,7 +7,7 @@ import {verifyToken} from '../middleware/verifyToken';
 import {checkOwner} from '../middleware/checkIfUserIsOwner';
 
 // Controllers
-import { getOrderFromUser, createOrder, deleteOrder, UpdateOrder } from '../controllers/order.controller';
+import { getOrderFromUser, createOrder, deleteOrder, updateAnOrder } from '../controllers/order.controller';
 
 router.route('/:userId/orders')
     .get(verifyToken, checkOwner, getOrderFromUser)
@@ -22,6 +22,6 @@ router.route('/:userId/orders/:orderId')
         check('address_id').optional().isLength({ min: 1 }).withMessage('You must indicate an addressID'),
         check('id').optional().not().exists().withMessage('Invalid request'),
         check('user_id').optional().not().exists().withMessage('Invalid request')
-    ], verifyToken, checkOwner, UpdateOrder);
+    ], verifyToken, checkOwner, updateAnOrder);
 
 export default router;

@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 
+// Models
 import { SelectCategories, SelectCategoryByID, CreateCategory, DeleteCategory, UpdateCategory } from '../models/Categories';
 
 // Interface

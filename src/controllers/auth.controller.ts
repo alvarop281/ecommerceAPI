@@ -2,9 +2,6 @@ import { Request, Response } from 'express';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 
-// Connection to the database
-import { connect } from '../database';
-
 // Interface User
 import { User } from '../interface/User';
 

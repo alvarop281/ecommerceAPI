@@ -1,12 +1,9 @@
 import {Request, Response} from 'express';
 
-// Connection to the database
-import { connect } from '../database';
-
 // Interface Product
 import { Product } from '../interface/Product';
 
-import { SelectProducts, SelectProductByID, CreateProduct, DeleteProduct, UpdateProduct } from '../models/Products';
+import { SelectProducts, SelectProductByID, SelectProductByItem, CreateProduct, DeleteProduct, UpdateProduct } from '../models/Products';
 
 // Get all products
 export async function getProducts(req: Request, res: Response): Promise<Response>{
@@ -19,7 +16,7 @@ export async function getProducts(req: Request, res: Response): Promise<Response
 export async function getProduct(req: Request, res: Response): Promise<Response>{
     const id = req.params.productId;
 
-    const product = await SelectProductByID(id);
+    const product: Product = await SelectProductByID(id);
 
     return res.json(product);
 }
@@ -28,17 +25,13 @@ export async function getProduct(req: Request, res: Response): Promise<Response>
 export async function getProductFromItems(req: Request, res: Response): Promise<Response>{
     const id = req.params.itemId;
 
-    // Connection to db
-    const conn = await connect();
-    const product = await conn.query('SELECT * FROM products WHERE products.item_id =?', [id]);
+    const product: Product = await SelectProductByItem(id);
 
-    return res.json(product[0]);
+    return res.json(product);
 }
 
 // Create a product
 export async function createProduct(req: Request, res: Response): Promise<Response>{
-    // Connect and create a new product
-    const conn = await connect();
     const newProduct: Product = req.body;
 
     newProduct['status'] = 'active';        //Default value
